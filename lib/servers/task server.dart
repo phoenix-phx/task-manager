@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasks/servers/Task.dart';
 
 class TaskServer extends ChangeNotifier{
   int _currentPosition = 0;
@@ -6,6 +7,8 @@ class TaskServer extends ChangeNotifier{
   List<String> _description = ['The tasks will be displayed like this one. Start being productive!'];
   List<String> _originalDescription = ['The tasks will be displayed like this one. Start being productive!'];
   List<bool> _finished = [true];
+
+  List<Task> _task = [Task('Sample Task', 'The tasks will be displayed like this one. Start being productive!', 'The tasks will be displayed like this one. Start being productive!', true), ];
 
   // Manage current index
   int getCurrentPosition(){
@@ -17,52 +20,39 @@ class TaskServer extends ChangeNotifier{
     notifyListeners();
   }
 
-  // Manage task titles
-  List<String> getTitles(){
-    return _title;
+  // Manage tasks
+  List<Task> getTasks(){
+    return _task;
   }
 
-  String getTitleAt(int i){
-    return _title[i];
+  Task getTaskAt(int i){
+    return _task[i];
   }
 
-  void addTitle(String title){
-    this._title.add(title);
+  void addTask(Task task){
+    this._task.add(task);
     notifyListeners();
   }
 
-  void editTitle(String newTitle, int index){
-    this._title[index] = newTitle;
+  void editTitleAt(String newTitle, int index){
+    this._task[index].title = newTitle;
     notifyListeners();
   }
 
-  // Manage task descriptions
-  List<String> getDescriptions(){
-    return _description;
-  }
-
-  String getDescriptionAt(int i){
-    return _description[i];
-  }
-
-  void addDescription(String description){
-    this._description.add(description);
-    this._originalDescription.add(description);
+  void editDescriptionAt(String newDescription, int index){
+    this._task[index].description = newDescription;
+    this._task[index].originalDescription = newDescription;
     notifyListeners();
   }
 
-  void editDescription(String newDescription, int index){
-    this._description[index] = newDescription;
-    this._originalDescription[index] = newDescription;
+  void editStateAt(int index, bool state){
+    this._task[index].state = state;
     notifyListeners();
   }
 
-  // Manage task's original descriptions
-  List<String> getOriginalDescriptions(){
-    return _originalDescription;
-  }
-
-  String getOriginalDescriptionAt(int i){
-    return _originalDescription[i];
+  void deleteTaskAt(int index){
+    print("estoy elimininando $index");
+    this._task.removeAt(index);
+    notifyListeners();
   }
 }
