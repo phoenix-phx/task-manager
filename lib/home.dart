@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tasks/management.dart';
 import 'package:tasks/servers/Task.dart';
 import 'servers/task server.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -16,9 +17,20 @@ class _HomePageState extends State<HomePage> {
   List<Task> tasks = [];
   bool isEmpty = false;
 
+  Future<List<Task>> getTasks() async {
+    final response = await http.get('http://10.0.2.2:3000/tasks');
+    print(response.body);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Init Data
+    Provider.of<TaskServer>(context, listen: true).apiGetTasks();
     tasks = Provider.of<TaskServer>(context, listen: true).getTasks();
     if(tasks.length == 0)
       isEmpty = true;

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:tasks/servers/Task.dart';
+import 'package:http/http.dart' as http;
 
 class TaskServer extends ChangeNotifier{
   int _currentPosition = 0;
@@ -21,6 +24,19 @@ class TaskServer extends ChangeNotifier{
   }
 
   // Manage tasks
+  Future<List<Task>> apiGetTasks() async{
+    List<Task> tasks = [];
+    final response = await http.get('http://10.0.2.2:3000/tasks');
+    String body = utf8.decode(response.bodyBytes);
+    final jsonData = jsonDecode(body);
+    print(response.body);
+    print(jsonData[0]['title']);
+    for(var item in jsonData){
+      tasks.add(Task(item['title'], item['detail'], item['detail'], (item['status'] == 'pending') ? true : false));
+    }
+    _task = tasks;
+  }
+
   List<Task> getTasks(){
     return _task;
   }
