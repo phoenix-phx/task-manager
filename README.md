@@ -1,16 +1,17 @@
-# tasks
+# Task Manager
 
-A new Flutter project.
+A cross-platform (android/iOS) app to help you manage your daily tasks.
 
-## Getting Started
+## Current version
+- 0.1.0 (Beta)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features
+- 0.1.0 (Beta)
+  - Welcome to Tasks Manager! 
+  - Support for tasks creation with "+" button.
+  - Every task has a PopUp menu button with the tasks option.
+  - Support for tasks edition with "Edit" option. 
+  - Support for tasks deletion with "Delete" option.
+  - Show your tasks as completed with "Check" option.
+  - If your task is marked as completed, bring it back with "reload" option.
+  - Tasks will only live during the app current execution.
