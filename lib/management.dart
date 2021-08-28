@@ -14,6 +14,7 @@ class ManageTask extends StatefulWidget {
 
 class _ManageTaskState extends State<ManageTask> {
   int index = -1;
+  Future<Task> currentTask;
   String _error;
 
   _ManageTaskState(this.index);
@@ -24,8 +25,7 @@ class _ManageTaskState extends State<ManageTask> {
     TextEditingController _descriptionCtrl = TextEditingController();
 
     if (index != -1){
-        _titleCtrl.text = Provider.of<TaskServer>(context).getTaskAt(index).title;
-        _descriptionCtrl.text = Provider.of<TaskServer>(context).getTaskAt(index).description;
+        currentTask = Provider.of<TaskServer>(context).getTaskAt(index);
     }
 
     var _formKey = GlobalKey<FormState>();
@@ -34,7 +34,8 @@ class _ManageTaskState extends State<ManageTask> {
       appBar: AppBar(
         title: Text((index == -1) ? "Create Task" : "Edit Task"),
       ),
-      body: Padding(
+      body: (index == -1) ?
+      Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
@@ -73,7 +74,7 @@ class _ManageTaskState extends State<ManageTask> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children:[
                   ElevatedButton(
-                    child: Text((index == -1) ? "Create!" : "Edit!"),
+                    child: Text("Create!"),
                     onPressed: () {
                       setState(() {
                         if(_titleCtrl.text.length == 0){
@@ -83,15 +84,8 @@ class _ManageTaskState extends State<ManageTask> {
                         else{
                           _error = null;
                         }
-
-                        Task currentTask = Task(_titleCtrl.text, (_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, (_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, true);
-                        if(index == -1) {
-                          Provider.of<TaskServer>(context, listen: false).addTask(currentTask);
-                        }
-                        else{
-                          Provider.of<TaskServer>(context, listen: false).editTitleAt(_titleCtrl.text, index);
-                          Provider.of<TaskServer>(context, listen: false).editDescriptionAt((_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, index);
-                        }
+                        Task currentTask = Task(-1, _titleCtrl.text, (_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, (_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, true);
+                        Provider.of<TaskServer>(context, listen: false).addTask(currentTask);
                         Navigator.of(context).pop();
                       });
                     },
@@ -107,7 +101,90 @@ class _ManageTaskState extends State<ManageTask> {
             ],
           ),
         ),
-      ),
+      )
+      : FutureBuilder(
+          future: currentTask,
+          builder: (context, snapshot){
+            if(snapshot.hasData){
+              Task data = snapshot.data;
+              _titleCtrl.text = data.title;
+              _descriptionCtrl.text = data.description;
+
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Form(
+                        key: _formKey,
+                        child: TextField(
+                          controller: _titleCtrl,
+                          decoration: InputDecoration(
+                            labelText: "Title",
+                            errorText: _error,
+                            labelStyle: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, ),
+
+                          ),
+                          style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, ),
+                          maxLines: 1,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextField(
+                        controller: _descriptionCtrl,
+                        decoration: InputDecoration(
+                          hintText: "Description (optional)",
+                          border: OutlineInputBorder(),
+                          hintStyle: TextStyle(fontSize: 21, ),
+                        ),
+                        style: TextStyle(fontSize: 16,),
+                        maxLines: 18,
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children:[
+                            ElevatedButton(
+                              child: Text("Edit!"),
+                              onPressed: () {
+                                setState(() {
+                                  if(_titleCtrl.text.length == 0){
+                                    _error = "Title can't be empty!";
+                                    return;
+                                  }
+                                  else{
+                                    _error = null;
+                                  }
+
+                                  Task currentTask = Task(index, _titleCtrl.text, (_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, (_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, true);
+                                  Provider.of<TaskServer>(context, listen: false).editTask(currentTask);
+                                  Navigator.of(context).pop();
+                                });
+                              },
+                            ),
+                            ElevatedButton(
+                              child: Text("Cancel"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ]
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }
+            return Center(
+              child: CircularProgressIndicator()
+            );
+          }
+      )
     );
   }
 }

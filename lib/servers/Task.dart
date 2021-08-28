@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 
 class Task{
+  int _id;
   String _title;
   String _description;
   String _originalDescription;
   bool _state;
 
-  Task(this._title, this._description, this._originalDescription, this._state);
+  Task(this._id, this._title, this._description, this._originalDescription, this._state);
+
+  int get id => _id;
+
+  set id(int value) {
+    _id = value;
+  }
 
   bool get state => _state;
 

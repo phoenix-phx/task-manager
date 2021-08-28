@@ -1,74 +1,73 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:tasks/servers/Task.dart';
 import 'package:http/http.dart' as http;
 
 class TaskServer extends ChangeNotifier{
-  int _currentPosition = 0;
-  List<String> _title = ['Sample Task'];
-  List<String> _description = ['The tasks will be displayed like this one. Start being productive!'];
-  List<String> _originalDescription = ['The tasks will be displayed like this one. Start being productive!'];
-  List<bool> _finished = [true];
-
-  List<Task> _task = [Task('Sample Task', 'The tasks will be displayed like this one. Start being productive!', 'The tasks will be displayed like this one. Start being productive!', true), ];
-
-  // Manage current index
-  int getCurrentPosition(){
-    return _currentPosition;
-  }
-
-  void setCurrentPosition(int position){
-    this._currentPosition = position;
-    notifyListeners();
-  }
+  final String _url = 'http://10.0.2.2:3000/tasks';
+  Future<List<Task>> _task;
 
   // Manage tasks
-  Future<List<Task>> apiGetTasks() async{
+  Future<List<Task>> getTasks() async{
     List<Task> tasks = [];
-    final response = await http.get('http://10.0.2.2:3000/tasks');
+    final response = await http.get(_url);
     String body = utf8.decode(response.bodyBytes);
     final jsonData = jsonDecode(body);
-    print(response.body);
-    print(jsonData[0]['title']);
+    //print('All tasks list:' + response.body);
+    //print(jsonData[0]['title']);
     for(var item in jsonData){
-      tasks.add(Task(item['title'], item['detail'], item['detail'], (item['status'] == 'pending') ? true : false));
+      tasks.add(Task(item['id'], item['title'], item['detail'], item['detail'], (item['status'] == 'pending') ? true : false));
     }
-    _task = tasks;
+    return tasks;
   }
 
-  List<Task> getTasks(){
-    return _task;
+  Future<Task> getTaskAt(int id) async {
+    final response = await http.get(_url + '/$id');
+    String body = utf8.decode(response.bodyBytes);
+    final jsonData = jsonDecode(body);
+    print('Task $id:' + response.body);
+    print(jsonData['title']);
+    return Task(jsonData['id'], jsonData['title'], jsonData['detail'], jsonData['detail'], (jsonData['status'] == 'pending' ? true : false));
   }
 
-  Task getTaskAt(int i){
-    return _task[i];
-  }
-
-  void addTask(Task task){
-    this._task.add(task);
+  void addTask(Task task) async {
+    final response = await http.post(_url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          "title": task.title,
+          "detail": task.description
+        }));
+    print('Add task response: ' + response.body);
     notifyListeners();
   }
 
-  void editTitleAt(String newTitle, int index){
-    this._task[index].title = newTitle;
+  void editTask(Task task) async {
+    final response = await http.put(_url + '/${task.id}',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          "title": task.title,
+          "detail": task.description
+        }));
+    print('Edit task response: ' + response.body);
     notifyListeners();
   }
 
-  void editDescriptionAt(String newDescription, int index){
-    this._task[index].description = newDescription;
-    this._task[index].originalDescription = newDescription;
+  void editStatus(int id, bool state) async {
+    String status = (state) ? 'pending' : 'completed';
+    final response = await http.put(_url + '/$id?state=' + status);
+    print('Edit task status response: ' + response.body);
     notifyListeners();
   }
 
-  void editStateAt(int index, bool state){
-    this._task[index].state = state;
-    notifyListeners();
-  }
-
-  void deleteTaskAt(int index){
-    print("estoy elimininando $index");
-    this._task.removeAt(index);
+  void deleteTask(int id) async {
+    final response = await http.delete(_url + '/$id');
+    print('Delete task response: ' + response.body);
     notifyListeners();
   }
 }
