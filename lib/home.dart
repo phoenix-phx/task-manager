@@ -29,16 +29,21 @@ class _HomePageState extends State<HomePage> {
         actions: [
           PopupMenuButton(
             itemBuilder: (ctx) => [
-              PopupMenuItem(child: Text('Refresh'), value: '0',),
-              PopupMenuItem(child: Text('Credits'), value: '1',),
+              PopupMenuItem(child: Text("User: " + Provider.of<TaskServer>(context, listen: false).getUsername()), value: '0',),
+              PopupMenuItem(child: Text('Refresh'), value: '1',),
+              PopupMenuItem(child: Text('Credits'), value: '2',),
             ],
             onSelected: (value){
               setState(() {
                 switch(value){
                   case '0':
-                    tasks = Provider.of<TaskServer>(context, listen: false).getTasks(context);
+                    // tasks = Provider.of<TaskServer>(context, listen: false).getTasks(context);
+
                     break;
                   case '1':
+                    tasks = Provider.of<TaskServer>(context, listen: false).getTasks(context);
+                    break;
+                  case '2':
                     Route route = MaterialPageRoute(builder: (context) => Credits());
                     Navigator.of(context).push(route);
                     break;
@@ -88,7 +93,7 @@ class _HomePageState extends State<HomePage> {
           switch(value){
             case 0:
               print("Check $id");
-              Provider.of<TaskServer>(context, listen: false).editStatus(id, false);
+              Provider.of<TaskServer>(context, listen: false).editStatus(id, false, context);
               break;
             case 1:
               print("Edit $id");
@@ -97,7 +102,7 @@ class _HomePageState extends State<HomePage> {
               break;
             case 2:
               print("Delete $id");
-              Provider.of<TaskServer>(context, listen: false).deleteTask(id);
+              Provider.of<TaskServer>(context, listen: false).deleteTask(id, context);
               break;
           }
         });
@@ -109,7 +114,7 @@ class _HomePageState extends State<HomePage> {
     return IconButton(
         icon: Icon(Icons.autorenew),
         onPressed: (){
-          Provider.of<TaskServer>(context, listen: false).editStatus(id, true);
+          Provider.of<TaskServer>(context, listen: false).editStatus(id, true, context);
         }
     );
   }

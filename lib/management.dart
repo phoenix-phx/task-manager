@@ -25,7 +25,7 @@ class _ManageTaskState extends State<ManageTask> {
     TextEditingController _descriptionCtrl = TextEditingController();
 
     if (index != -1){
-        currentTask = Provider.of<TaskServer>(context).getTaskAt(index);
+        currentTask = Provider.of<TaskServer>(context).getTaskAt(index, context);
     }
 
     var _formKey = GlobalKey<FormState>();
@@ -85,7 +85,7 @@ class _ManageTaskState extends State<ManageTask> {
                           _error = null;
                         }
                         Task currentTask = Task(-1, _titleCtrl.text, (_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, (_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, true);
-                        Provider.of<TaskServer>(context, listen: false).addTask(currentTask);
+                        Provider.of<TaskServer>(context, listen: false).addTask(currentTask, context);
                         Navigator.of(context).pop();
                       });
                     },
@@ -162,7 +162,7 @@ class _ManageTaskState extends State<ManageTask> {
                                   }
 
                                   Task currentTask = Task(index, _titleCtrl.text, (_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, (_descriptionCtrl.text.isEmpty) ? "" : _descriptionCtrl.text, true);
-                                  Provider.of<TaskServer>(context, listen: false).editTask(currentTask);
+                                  Provider.of<TaskServer>(context, listen: false).editTask(currentTask, context);
                                   Navigator.of(context).pop();
                                 });
                               },
