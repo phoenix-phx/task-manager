@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 import 'package:provider/provider.dart';
 import 'servers/task server.dart';
+import 'login-signup.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.amber,
         ),
-        home: HomePage(),
+        home: LoginForm(),
       ),
     );
   }

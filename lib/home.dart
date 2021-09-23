@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasks/management.dart';
 import 'package:tasks/servers/Task.dart';
+import 'package:tasks/servers/User.dart';
 import 'servers/task server.dart';
 import 'credits.dart';
 
@@ -20,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // Init Data
-    tasks = Provider.of<TaskServer>(context, listen: true).getTasks();
+    tasks = Provider.of<TaskServer>(context, listen: true).getTasks(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 switch(value){
                   case '0':
-                    tasks = Provider.of<TaskServer>(context, listen: false).getTasks();
+                    tasks = Provider.of<TaskServer>(context, listen: false).getTasks(context);
                     break;
                   case '1':
                     Route route = MaterialPageRoute(builder: (context) => Credits());
