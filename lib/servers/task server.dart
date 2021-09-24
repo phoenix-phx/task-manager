@@ -204,9 +204,15 @@ class TaskServer extends ChangeNotifier{
       final jsonData = jsonDecode(body);
       print(jsonData['token']);
       await _storage.write(key: 'token', value: jsonData['token']);
-      this._username = jsonData['username'];
+      this._username = jsonData['name'];
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => HomePage()), (route) => false);
       return true;
     }
+  }
+
+  void logout() async {
+    await _storage.delete(key: 'token');
+    _username = null;
+    notifyListeners();
   }
 }

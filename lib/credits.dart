@@ -14,7 +14,7 @@ class Credits extends StatelessWidget {
         children: [
           Center(child: Text('Tasks Manager', style: TextStyle(color: Colors.black, fontSize: 35, fontWeight: FontWeight.bold),),),
           SizedBox(width: 0, height: 15,),
-          Center(child: Text('Version: 1.0.0 (Beta)', style: TextStyle(color: Colors.black, fontSize: 15,),)),
+          Center(child: Text('Version: 2.1.2 (Beta)', style: TextStyle(color: Colors.black, fontSize: 15,),)),
           SizedBox(width: 0, height: 5,),
           Center(child: Text('Developed by: Alexander Sosa', style: TextStyle(color: Colors.black, fontSize: 15,),)),
         ],

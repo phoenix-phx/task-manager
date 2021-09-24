@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tasks/management.dart';
 import 'package:tasks/servers/Task.dart';
 import 'package:tasks/servers/User.dart';
+import 'login-signup.dart';
 import 'servers/task server.dart';
 import 'credits.dart';
 
@@ -32,6 +33,7 @@ class _HomePageState extends State<HomePage> {
               PopupMenuItem(child: Text("User: " + Provider.of<TaskServer>(context, listen: false).getUsername()), value: '0',),
               PopupMenuItem(child: Text('Refresh'), value: '1',),
               PopupMenuItem(child: Text('Credits'), value: '2',),
+              PopupMenuItem(child: Text('Logout'), value: '3',),
             ],
             onSelected: (value){
               setState(() {
@@ -46,6 +48,10 @@ class _HomePageState extends State<HomePage> {
                   case '2':
                     Route route = MaterialPageRoute(builder: (context) => Credits());
                     Navigator.of(context).push(route);
+                    break;
+                  case '3':
+                    Provider.of<TaskServer>(context, listen: false).logout();
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => LoginForm()), (route) => false);
                     break;
                 }
               });
@@ -62,6 +68,11 @@ class _HomePageState extends State<HomePage> {
                   crossAxisCount: 1,
                   children: _taskList(snapshot.data),
                   childAspectRatio: (3),
+              );
+            }
+            else if(snapshot.data == null){
+              return Center(
+                child: Text('Start creating some tasks!'),
               );
             }
             return Center(
